@@ -31,7 +31,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			return m, tea.Quit
-		case tea.KeyEnter:
+		case tea.KeyEnter, tea.KeyTab:
 			if !m.focusOnButton {
 				m.focusOnButton = true
 				return m, nil
@@ -57,13 +57,13 @@ func (m model) View() string {
 			Padding(0, 2)
 
 		builder.WriteString(title.Render("Hello! Welcome to the Beepy Setup Wizard™"))
-		builder.WriteString("\nA quick guide to navigating the Wizard:\n")
-		builder.WriteString("\t↹ Tab|⏎ Return|↓ Down\n")
-		builder.WriteString("\t\tMove focus downward, or move to the next page\n")
-		builder.WriteString("\t⇧↹ Shift-Tab|⇧⏎ Shift-Return|↑ Up\n")
-		builder.WriteString("\t\tMove focus upward, or move to the previous page\n")
+		builder.WriteString("\nA quick guide to navigating the Wizard:\n\n")
+		builder.WriteString("\t↹ Tab|⏎ Return\n")
+		builder.WriteString("\t\tMove focus forward, or progress to the next page\n")
+		builder.WriteString("\t⇧↹ Shift-Tab|⇧⏎ Shift-Return\n")
+		builder.WriteString("\t\tMove focus backward, or return to the previous page\n")
 		builder.WriteString("\t^C Ctrl-C\n")
-		builder.WriteString("\t\tQuit\n")
+		builder.WriteString("\t\tQuit\n\n")
 		builder.WriteString("We hope you enjoy your time with the Wizard 🧙!\n\n")
 		builder.WriteString(button.Render("Next"))
 	default:
