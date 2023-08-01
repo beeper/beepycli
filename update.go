@@ -5,8 +5,8 @@ import (
 )
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if msg, ok := msg.(tea.KeyMsg); ok {
-		switch msg.Type {
+	if key, ok := msg.(tea.KeyMsg); ok {
+		switch key.Type {
 		case tea.KeyCtrlC:
 			return m, tea.Quit
 		case tea.KeyEnter, tea.KeyTab:
@@ -39,10 +39,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.matrix.homeserver.Blur()
 				} else if m.matrix.password.Focused() {
 					m.matrix.password.Blur()
+					m.matrix.homeserver.CursorEnd()
 					m.matrix.homeserver.Focus()
 				} else if m.matrix.username.Focused() {
 					m.matrix.username.Blur()
 					m.matrix.password.Focus()
+					return m, getHomeserverString(m.matrix.username.Value())
 				} else if m.focusOnButton {
 					m.phase = next
 					m.focusOnButton = false
@@ -105,6 +107,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, cmd
 		}
+	} else if username, ok := msg.(usernameParseMsg); ok {
+		m.matrix.homeserver.Reset()
+		m.matrix.homeserver.Placeholder = "Resolving..."
+		return m, resolveWellKnown(string(username))
+	} else if usernameErr, ok := msg.(usernameErrMsg); ok {
+		m.matrix.homeserver.Reset()
+		m.matrix.homeserver.Placeholder = string(usernameErr)
+	} else if homeserver, ok := msg.(homeserverParseMsg); ok {
+		m.matrix.homeserver.Placeholder = "https://example.com"
+		m.matrix.homeserver.SetValue(string(homeserver))
+	} else if homeserverErr, ok := msg.(homeserverErrMsg); ok {
+		m.matrix.homeserver.Reset()
+		m.matrix.homeserver.Placeholder = string(homeserverErr)
 	}
 	return m, nil
 }
