@@ -115,7 +115,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.matrix.homeserver.Reset()
 		m.matrix.homeserver.Placeholder = string(usernameErr)
 	} else if homeserver, ok := msg.(homeserverParseMsg); ok {
-		m.matrix.homeserver.Placeholder = "https://example.com"
+		m.matrix.homeserver.Placeholder = domainPlaceholder
 		m.matrix.homeserver.SetValue(string(homeserver))
 	} else if homeserverErr, ok := msg.(homeserverErrMsg); ok {
 		m.matrix.homeserver.Reset()

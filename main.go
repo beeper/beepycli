@@ -14,6 +14,9 @@ const (
 	ssh
 	matrix
 	next
+
+	passwordPlaceholder = "correct horse battery staple"
+	domainPlaceholder   = "https://example.com"
 )
 
 var (

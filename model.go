@@ -44,8 +44,8 @@ func initMatrixModel() matrixModel {
 	}
 
 	configureTextInput(&m.username, "@user:example.com", false)
-	configureTextInput(&m.password, "correct horse battery staple", true)
-	configureTextInput(&m.homeserver, "https://example.com", false)
+	configureTextInput(&m.password, passwordPlaceholder, true)
+	configureTextInput(&m.homeserver, domainPlaceholder, false)
 
 	return m
 }
