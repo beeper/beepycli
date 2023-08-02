@@ -22,10 +22,6 @@ var (
 	purple  = gloss.Color("5")
 )
 
-func (m model) Init() tea.Cmd {
-	return nil
-}
-
 func main() {
 	m := initModel()
 	tea.NewProgram(m).Run()

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/charmbracelet/bubbles/textinput"
+	"github.com/charmbracelet/bubbletea"
 	gloss "github.com/charmbracelet/lipgloss"
 )
 
@@ -65,4 +66,8 @@ func initModel() model {
 	}
 
 	return m
+}
+
+func (m model) Init() tea.Cmd {
+	return nil
 }
