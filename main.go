@@ -6,6 +6,7 @@ import (
 	"github.com/figbert/beepy/matrix"
 	"github.com/figbert/beepy/ssh"
 	"github.com/figbert/beepy/utils"
+	"github.com/figbert/beepy/verification"
 	"github.com/figbert/beepy/welcome"
 )
 
@@ -15,21 +16,24 @@ const (
 	welcomePhase phase = iota
 	sshPhase
 	matrixPhase
+	verificationPhase
 )
 
 type model struct {
-	phase   phase
-	welcome welcome.Model
-	ssh     ssh.Model
-	matrix  matrix.Model
+	phase        phase
+	welcome      welcome.Model
+	ssh          ssh.Model
+	matrix       matrix.Model
+	verification verification.Model
 }
 
 func initModel() model {
 	return model{
-		phase:   welcomePhase,
-		welcome: welcome.InitModel(),
-		ssh:     ssh.InitModel(),
-		matrix:  matrix.InitModel(),
+		phase:        welcomePhase,
+		welcome:      welcome.InitModel(),
+		ssh:          ssh.InitModel(),
+		matrix:       matrix.InitModel(),
+		verification: verification.InitModel(),
 	}
 }
 
@@ -58,6 +62,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			mtrx, cmd := m.matrix.Update(msg)
 			m.matrix = mtrx.(matrix.Model)
 			return m, cmd
+		case verificationPhase:
+			vrfy, cmd := m.verification.Update(msg)
+			m.verification = vrfy.(verification.Model)
+			return m, cmd
 		}
 	}
 	return m, nil
@@ -71,6 +79,8 @@ func (m model) View() string {
 		return m.ssh.View()
 	case matrixPhase:
 		return m.matrix.View()
+	case verificationPhase:
+		return m.verification.View()
 	default:
 		return "How did we end up here?"
 	}
