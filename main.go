@@ -2,25 +2,79 @@ package main
 
 import (
 	"github.com/charmbracelet/bubbletea"
-	gloss "github.com/charmbracelet/lipgloss"
+
+	"github.com/figbert/beepy/matrix"
+	"github.com/figbert/beepy/ssh"
+	"github.com/figbert/beepy/utils"
+	"github.com/figbert/beepy/welcome"
 )
 
 type phase int
 
 const (
-	welcome phase = iota
-	ssh
-	matrix
-	next
-
-	passwordPlaceholder = "correct horse battery staple"
-	domainPlaceholder   = "https://example.com"
+	welcomePhase phase = iota
+	sshPhase
+	matrixPhase
 )
 
-var (
-	magenta = gloss.Color("13")
-	purple  = gloss.Color("5")
-)
+type model struct {
+	phase   phase
+	welcome welcome.Model
+	ssh     ssh.Model
+	matrix  matrix.Model
+}
+
+func initModel() model {
+	return model{
+		phase:   welcomePhase,
+		welcome: welcome.InitModel(),
+		ssh:     ssh.InitModel(),
+		matrix:  matrix.InitModel(),
+	}
+}
+
+func (m model) Init() tea.Cmd {
+	return nil
+}
+
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if _, ok := msg.(utils.NextPhaseMsg); ok {
+		m.phase++
+		return m, nil
+	} else if _, ok := msg.(utils.PrevPhaseMsg); ok {
+		m.phase--
+		return m, nil
+	} else {
+		switch m.phase {
+		case welcomePhase:
+			wlcm, cmd := m.welcome.Update(msg)
+			m.welcome = wlcm.(welcome.Model)
+			return m, cmd
+		case sshPhase:
+			s, cmd := m.ssh.Update(msg)
+			m.ssh = s.(ssh.Model)
+			return m, cmd
+		case matrixPhase:
+			mtrx, cmd := m.matrix.Update(msg)
+			m.matrix = mtrx.(matrix.Model)
+			return m, cmd
+		}
+	}
+	return m, nil
+}
+
+func (m model) View() string {
+	switch m.phase {
+	case welcomePhase:
+		return m.welcome.View()
+	case sshPhase:
+		return m.ssh.View()
+	case matrixPhase:
+		return m.matrix.View()
+	default:
+		return "How did we end up here?"
+	}
+}
 
 func main() {
 	m := initModel()

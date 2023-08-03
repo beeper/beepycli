@@ -1,4 +1,4 @@
-package main
+package matrix
 
 import (
 	"maunium.net/go/mautrix"
