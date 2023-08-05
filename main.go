@@ -48,10 +48,14 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if _, ok := msg.(utils.NextPhaseMsg); ok {
-		m.phase++
+		if m.phase < verificationPhase {
+			m.phase++
+		}
 		return m, nil
 	} else if _, ok := msg.(utils.PrevPhaseMsg); ok {
-		m.phase--
+		if m.phase > welcomePhase {
+			m.phase--
+		}
 		return m, nil
 	} else {
 		switch m.phase {
