@@ -76,7 +76,7 @@ func (m Model) View() string {
 		"%s\n"+
 			"The Wizard accesses your device over SSH.\n\n"+
 			"\tssh %s@%s\n\n"+
-			"This is extremely required.\n\n"+
+			"He also loves casting spells 🪄.\n\n"+
 			"%s",
 		utils.Title().Render("Configure network access to your Beepy"),
 		m.username.View(),

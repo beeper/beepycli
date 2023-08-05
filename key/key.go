@@ -98,7 +98,7 @@ func (m Model) View() string {
 			"and their location on your computer.\n\n"+
 			"Password: %s\n"+
 			"Path to Keys: %s %s\n\n"+
-			"Whole lotta cryptography gonna be happening here real soon!\n\n"+
+			"Whole lotta cryptography gonna be happening here real soon 🔐!\n\n"+
 			"%s",
 		utils.Title().Render("Configure end-to-end encryption for your Beepy"),
 		italic.Render("Gear > Settings > Security & Privacy"),

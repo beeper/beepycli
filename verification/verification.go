@@ -62,7 +62,7 @@ func (m Model) View() string {
 			"Please input your account recovery passphrase. This is the 48 character\n"+
 			"recovery code you received when you first set up Beeper.\n\n"+
 			"Recovery Phrase: %s\n\n"+
-			"Something cool about the Beepy: this step doesn't cost $8/month!\n\n"+
+			"Something cool about the Beepy: this step doesn't cost $8/month 🤑!\n\n"+
 			"%s",
 		utils.Title().Render("Verify your Beepy client"),
 		m.recovery.View(),

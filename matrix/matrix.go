@@ -98,7 +98,7 @@ func (m Model) View() string {
 			"\tUsername: %s\n\n"+
 			"\tPassword: %s\n\n"+
 			"\tHomeserver: %s\n\n"+
-			"We'll have you up and chatting in style in no time at all.\n\n"+
+			"We'll have you up and chatting in style in no time at all 💬.\n\n"+
 			"%s",
 		utils.Title().Render("Configure your Matrix account"),
 		m.username.View(),
