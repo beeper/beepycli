@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"fmt"
+
 	"github.com/charmbracelet/bubbles/textinput"
 	gloss "github.com/charmbracelet/lipgloss"
 )
@@ -17,4 +19,8 @@ func TextInput(placeholder string, hidden bool) textinput.Model {
 	}
 
 	return t
+}
+
+func Error(msg string) string {
+	return gloss.NewStyle().Foreground(Red).Render(fmt.Sprintf("⚠️ %s ⚠️", msg))
 }

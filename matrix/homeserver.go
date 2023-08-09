@@ -12,9 +12,9 @@ type usernameErrMsg string
 type homeserverParseMsg string
 type homeserverErrMsg string
 
-func getHomeserverString(username string) tea.Cmd {
+func getHomeserverString(mxID id.UserID) tea.Cmd {
 	return func() tea.Msg {
-		_, homeserver, err := id.UserID(username).Parse()
+		_, homeserver, err := mxID.ParseAndValidate()
 		if err != nil {
 			return usernameErrMsg(err.Error())
 		}

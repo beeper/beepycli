@@ -5,21 +5,37 @@ import (
 
 	"github.com/figbert/beepy/utils"
 
+	"maunium.net/go/mautrix/id"
+
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbletea"
 )
 
 type Model struct {
-	username, password, homeserver textinput.Model
-	buttonFocused                  bool
+	localpart, homeserver, password, url textinput.Model
+	usernameError                        string
+	buttonFocused                        bool
 }
 
 func InitModel() Model {
 	return Model{
-		username:   utils.TextInput("@user:example.com", false),
+		localpart:  utils.TextInput("user", false),
+		homeserver: utils.TextInput("example.com", false),
 		password:   utils.TextInput(utils.PasswordPlaceholder, true),
-		homeserver: utils.TextInput(utils.DomainPlaceholder, false),
+		url:        utils.TextInput(utils.DomainPlaceholder, false),
 	}
+}
+
+func (m Model) MxID() id.UserID {
+	return id.NewUserID(m.localpart.Value(), m.homeserver.Value())
+}
+
+func (m Model) MxPassword() string {
+	return m.password.Value()
+}
+
+func (m Model) Homeserver() string {
+	return m.url.Value()
 }
 
 func (m Model) Init() tea.Cmd {
@@ -33,77 +49,98 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		case tea.KeyEnter, tea.KeyTab:
 			if m.buttonFocused {
-				return m, utils.NextPhase
-			} else if m.homeserver.Focused() {
+				if m.usernameError == "" && len(m.password.Value()) > 0 && len(m.url.Value()) > 0 {
+					return m, utils.NextPhase
+				}
+			} else if m.url.Focused() {
 				m.buttonFocused = true
-				m.homeserver.Blur()
+				m.url.Blur()
 			} else if m.password.Focused() {
 				m.password.Blur()
-				m.homeserver.CursorEnd()
-				m.homeserver.Focus()
-			} else if m.username.Focused() {
-				m.username.Blur()
+				m.url.CursorEnd()
+				m.url.Focus()
+			} else if m.homeserver.Focused() {
+				m.homeserver.Blur()
 				m.password.Focus()
-				return m, getHomeserverString(m.username.Value())
+				return m, getHomeserverString(m.MxID())
+			} else if m.localpart.Focused() {
+				m.localpart.Blur()
+				m.localpart.CursorStart()
+				m.homeserver.Focus()
 			} else {
-				m.username.Focus()
+				m.localpart.Focus()
 			}
 		case tea.KeyShiftTab:
 			if m.buttonFocused {
 				m.buttonFocused = false
-				m.homeserver.Focus()
-			} else if m.homeserver.Focused() {
-				m.homeserver.Blur()
+				m.url.Focus()
+			} else if m.url.Focused() {
+				m.url.Blur()
 				m.password.Focus()
 			} else if m.password.Focused() {
 				m.password.Blur()
-				m.username.Focus()
-			} else if m.username.Focused() {
-				m.username.Blur()
+				m.homeserver.Focus()
+			} else if m.homeserver.Focused() {
+				m.homeserver.Blur()
+				m.localpart.CursorEnd()
+				m.localpart.Focus()
+			} else if m.localpart.Focused() {
+				m.localpart.Blur()
 			} else {
 				return m, utils.PrevPhase
 			}
 		default:
 			var cmd tea.Cmd
-			if m.homeserver.Focused() {
-				m.homeserver, cmd = m.homeserver.Update(msg)
+			if m.url.Focused() {
+				m.url, cmd = m.url.Update(msg)
 			} else if m.password.Focused() {
 				m.password, cmd = m.password.Update(msg)
-			} else if m.username.Focused() {
-				m.username, cmd = m.username.Update(msg)
+			} else if m.homeserver.Focused() {
+				m.homeserver, cmd = m.homeserver.Update(msg)
+			} else if m.localpart.Focused() {
+				m.localpart, cmd = m.localpart.Update(msg)
 			}
 			return m, cmd
 		}
 	} else if username, ok := msg.(usernameParseMsg); ok {
-		m.homeserver.Reset()
-		m.homeserver.Placeholder = "Resolving..."
+		m.url.Reset()
+		m.url.Placeholder = "Resolving..."
+		m.usernameError = ""
 		return m, resolveWellKnown(string(username))
 	} else if usernameErr, ok := msg.(usernameErrMsg); ok {
-		m.homeserver.Reset()
-		m.homeserver.Placeholder = string(usernameErr)
-	} else if homeserver, ok := msg.(homeserverParseMsg); ok {
-		m.homeserver.Placeholder = utils.DomainPlaceholder
-		m.homeserver.SetValue(string(homeserver))
-	} else if homeserverErr, ok := msg.(homeserverErrMsg); ok {
-		m.homeserver.Reset()
-		m.homeserver.Placeholder = string(homeserverErr)
+		m.url.Reset()
+		m.url.Placeholder = utils.DomainPlaceholder
+		m.usernameError = string(usernameErr)
+	} else if hs, ok := msg.(homeserverParseMsg); ok {
+		m.url.Placeholder = utils.DomainPlaceholder
+		m.url.SetValue(string(hs))
+	} else if hsErr, ok := msg.(homeserverErrMsg); ok {
+		m.url.Reset()
+		m.url.Placeholder = string(hsErr)
 	}
 	return m, nil
 }
 
 func (m Model) View() string {
+	err := "\n"
+	if m.usernameError != "" {
+		err = "\t" + utils.Error(m.usernameError) + "\n\n"
+	}
+
 	return fmt.Sprintf(
 		"%s\n"+
 			"Let's bootstrap your Beepy... with Beeper!\n\n"+
-			"\tUsername: %s\n\n"+
+			"\tUsername: @%s:%s\n%s"+
 			"\tPassword: %s\n\n"+
 			"\tHomeserver: %s\n\n"+
 			"We'll have you up and chatting in style in no time at all 💬.\n\n"+
 			"%s",
 		utils.Title().Render("Configure your Matrix account"),
-		m.username.View(),
-		m.password.View(),
+		m.localpart.View(),
 		m.homeserver.View(),
+		err,
+		m.password.View(),
+		m.url.View(),
 		utils.Button(m.buttonFocused).Render("Next"),
 	)
 }
