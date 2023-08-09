@@ -3,19 +3,21 @@ package key
 import (
 	"os"
 
+	"github.com/figbert/beepy/utils"
+
 	"github.com/charmbracelet/bubbletea"
 	gloss "github.com/charmbracelet/lipgloss"
 )
 
 var (
 	fileOk = gloss.NewStyle().
-		Foreground(gloss.Color("2")).
+		Foreground(utils.Green).
 		SetString("✔")
 	fileLoading = gloss.NewStyle().
-			Foreground(gloss.Color("3")).
+			Foreground(utils.Yellow).
 			SetString("↻")
 	fileErr = gloss.NewStyle().
-		Foreground(gloss.Color("1")).
+		Foreground(utils.Red).
 		SetString("✘")
 )
 
