@@ -3,6 +3,7 @@ package key
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/figbert/beepy/utils"
 
@@ -12,16 +13,16 @@ import (
 )
 
 type Model struct {
-	password, file textinput.Model
-	status         string
-	buttonFocused  bool
+	password, file       textinput.Model
+	status               string
+	buttonFocused, valid bool
 }
 
 func InitModel() Model {
 	var placeholder string
 	h, err := os.UserHomeDir()
 	if err == nil {
-		placeholder = h
+		placeholder = filepath.Join(h, "element-keys.txt")
 	} else {
 		placeholder = "/home/user/element-keys.txt"
 	}
@@ -30,6 +31,14 @@ func InitModel() Model {
 		password: utils.TextInput(utils.PasswordPlaceholder, true),
 		file:     utils.TextInput(placeholder, false),
 	}
+}
+
+func (m Model) KeyPath() string {
+	return m.file.Value()
+}
+
+func (m Model) KeyPassword() string {
+	return m.password.Value()
 }
 
 func (m Model) Init() tea.Cmd {
@@ -43,7 +52,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		case tea.KeyEnter, tea.KeyTab:
 			if m.buttonFocused {
-				return m, utils.NextPhase
+				if m.valid && len(m.password.Value()) > 0 {
+					return m, utils.NextPhase
+				}
 			} else if m.file.Focused() {
 				m.buttonFocused = true
 				m.file.Blur()
@@ -77,11 +88,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	} else if _, ok := msg.(fileLoadingMsg); ok {
 		m.status = fileLoading.Render()
+		m.valid = false
 		return m, validate(m.file.Value())
 	} else if _, ok := msg.(fileOkMsg); ok {
 		m.status = fileOk.Render()
+		m.valid = true
 	} else if _, ok := msg.(fileErrMsg); ok {
 		m.status = fileErr.Render()
+		m.valid = false
 	}
 	return m, nil
 }
