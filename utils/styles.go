@@ -1,8 +1,6 @@
 package utils
 
-import (
-	gloss "github.com/charmbracelet/lipgloss"
-)
+import gloss "github.com/charmbracelet/lipgloss"
 
 func Title() gloss.Style {
 	return gloss.NewStyle().Bold(true)

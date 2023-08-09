@@ -1,8 +1,6 @@
 package utils
 
-import (
-	gloss "github.com/charmbracelet/lipgloss"
-)
+import gloss "github.com/charmbracelet/lipgloss"
 
 var (
 	Magenta = gloss.Color("13")
