@@ -18,6 +18,10 @@ func InitModel() Model {
 	return Model{recovery: utils.TextInput("tDAK LMRH PiYE bdzi maCe xLX5 wV6P Nmfd c5mC wLef 15Fs VVSc", true)}
 }
 
+func (m Model) RecoveryPhrase() string {
+	return m.recovery.Value()
+}
+
 func (m Model) Init() tea.Cmd {
 	return nil
 }
@@ -29,7 +33,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		case tea.KeyEnter, tea.KeyTab:
 			if m.buttonFocused {
-				return m, utils.NextPhase
+				if len(m.recovery.Value()) > 0 {
+					return m, utils.NextPhase
+				}
 			} else if m.recovery.Focused() {
 				m.buttonFocused = true
 				m.recovery.Blur()
