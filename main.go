@@ -1,10 +1,13 @@
 package main
 
 import (
+	"maunium.net/go/mautrix/id"
+
 	"github.com/charmbracelet/bubbletea"
 
 	"github.com/figbert/beepy/utils"
 
+	"github.com/figbert/beepy/gomuks"
 	"github.com/figbert/beepy/key"
 	"github.com/figbert/beepy/matrix"
 	"github.com/figbert/beepy/ssh"
@@ -20,6 +23,7 @@ const (
 	matrixPhase
 	keyPhase
 	verificationPhase
+	gomuksPhase
 )
 
 type model struct {
@@ -29,6 +33,7 @@ type model struct {
 	matrix       matrix.Model
 	key          key.Model
 	verification verification.Model
+	gomuks       gomuks.Model
 }
 
 func initModel() model {
@@ -39,7 +44,17 @@ func initModel() model {
 		matrix:       matrix.InitModel(),
 		key:          key.InitModel(),
 		verification: verification.InitModel(),
+		gomuks:       gomuks.InitModel(),
 	}
+}
+
+func (m model) getGomuksConfig() (id.UserID, string, string, string, string, string) {
+	return m.matrix.MxID(),
+		m.matrix.MxPassword(),
+		m.matrix.Homeserver(),
+		m.key.KeyPath(),
+		m.key.KeyPassword(),
+		m.verification.RecoveryPhrase()
 }
 
 func (m model) Init() tea.Cmd {
@@ -48,12 +63,18 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if _, ok := msg.(utils.NextPhaseMsg); ok {
-		if m.phase < verificationPhase {
+		if m.phase == verificationPhase {
+			m.gomuks = m.gomuks.UpdateConfig(m.getGomuksConfig())
+			m.phase++
+			return m, m.gomuks.Init()
+		} else if m.phase < verificationPhase {
 			m.phase++
 		}
 		return m, nil
 	} else if _, ok := msg.(utils.PrevPhaseMsg); ok {
-		if m.phase > welcomePhase {
+		if m.phase == gomuksPhase {
+			m.phase = welcomePhase
+		} else if m.phase > welcomePhase {
 			m.phase--
 		}
 		return m, nil
@@ -79,6 +100,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			vrfy, cmd := m.verification.Update(msg)
 			m.verification = vrfy.(verification.Model)
 			return m, cmd
+		case gomuksPhase:
+			gmks, cmd := m.gomuks.Update(msg)
+			m.gomuks = gmks.(gomuks.Model)
+			return m, cmd
 		}
 	}
 	return m, nil
@@ -96,6 +121,8 @@ func (m model) View() string {
 		return m.key.View()
 	case verificationPhase:
 		return m.verification.View()
+	case gomuksPhase:
+		return m.gomuks.View()
 	default:
 		return "How did we end up here?"
 	}
