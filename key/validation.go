@@ -10,15 +10,15 @@ import (
 )
 
 var (
-	fileOk = gloss.NewStyle().
-		Foreground(utils.Green).
-		SetString("✔")
-	fileLoading = gloss.NewStyle().
-			Foreground(utils.Yellow).
-			SetString("↻")
-	fileErr = gloss.NewStyle().
-		Foreground(utils.Red).
-		SetString("✘")
+	okValidation = gloss.NewStyle().
+			Foreground(utils.Green).
+			SetString("✔")
+	loadingValidation = gloss.NewStyle().
+				Foreground(utils.Yellow).
+				SetString("↻")
+	errValidation = gloss.NewStyle().
+			Foreground(utils.Red).
+			SetString("✘")
 )
 
 type fileOkMsg struct{}
@@ -29,7 +29,7 @@ func prevalidate() tea.Msg {
 	return fileLoadingMsg{}
 }
 
-func validate(path string) tea.Cmd {
+func validateKey(path string) tea.Cmd {
 	return func() tea.Msg {
 		file, err := os.Open(path)
 		if err != nil {
@@ -42,5 +42,13 @@ func validate(path string) tea.Cmd {
 		}
 
 		return fileOkMsg{}
+	}
+}
+
+type passwordValidationMsg bool
+
+func validatePassword(password, confirmation string) tea.Cmd {
+	return func() tea.Msg {
+		return passwordValidationMsg(len(password) > 0 && password == confirmation)
 	}
 }

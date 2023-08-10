@@ -12,10 +12,15 @@ import (
 	gloss "github.com/charmbracelet/lipgloss"
 )
 
+type valid struct {
+	file, password bool
+}
+
 type Model struct {
-	password, file       textinput.Model
-	status               string
-	buttonFocused, valid bool
+	password, confirmation, file textinput.Model
+	status                       string
+	valid                        valid
+	buttonFocused                bool
 }
 
 func InitModel() Model {
@@ -28,8 +33,9 @@ func InitModel() Model {
 	}
 
 	return Model{
-		password: utils.TextInput(utils.PasswordPlaceholder, true),
-		file:     utils.TextInput(placeholder, false),
+		password:     utils.TextInput(utils.PasswordPlaceholder, true),
+		confirmation: utils.TextInput(utils.PasswordPlaceholder, true),
+		file:         utils.TextInput(placeholder, false),
 	}
 }
 
@@ -52,15 +58,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		case tea.KeyEnter, tea.KeyTab:
 			if m.buttonFocused {
-				if m.valid && len(m.password.Value()) > 0 {
+				if m.valid.file && m.valid.password {
 					return m, utils.NextPhase
 				}
 			} else if m.file.Focused() {
 				m.buttonFocused = true
 				m.file.Blur()
+			} else if m.confirmation.Focused() {
+				m.confirmation.Blur()
+				m.file.Focus()
 			} else if m.password.Focused() {
 				m.password.Blur()
-				m.file.Focus()
+				m.confirmation.Focus()
 			} else {
 				m.password.Focus()
 			}
@@ -70,6 +79,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.file.Focus()
 			} else if m.file.Focused() {
 				m.file.Blur()
+				m.confirmation.Focus()
+			} else if m.confirmation.Focused() {
+				m.confirmation.Blur()
 				m.password.Focus()
 			} else if m.password.Focused() {
 				m.password.Blur()
@@ -80,6 +92,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			var cmd tea.Cmd
 			if m.password.Focused() {
 				m.password, cmd = m.password.Update(msg)
+				cmd = tea.Batch(cmd, validatePassword(m.password.Value(), m.confirmation.Value()))
+			} else if m.confirmation.Focused() {
+				m.confirmation, cmd = m.confirmation.Update(msg)
+				cmd = tea.Batch(cmd, validatePassword(m.password.Value(), m.confirmation.Value()))
 			} else if m.file.Focused() {
 				m.file, cmd = m.file.Update(msg)
 				return m, tea.Batch(cmd, prevalidate)
@@ -87,21 +103,32 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, cmd
 		}
 	} else if _, ok := msg.(fileLoadingMsg); ok {
-		m.status = fileLoading.Render()
-		m.valid = false
-		return m, validate(m.file.Value())
+		m.status = loadingValidation.Render()
+		m.valid.file = false
+		return m, validateKey(m.file.Value())
 	} else if _, ok := msg.(fileOkMsg); ok {
-		m.status = fileOk.Render()
-		m.valid = true
+		m.status = okValidation.Render()
+		m.valid.file = true
 	} else if _, ok := msg.(fileErrMsg); ok {
-		m.status = fileErr.Render()
-		m.valid = false
+		m.status = errValidation.Render()
+		m.valid.file = false
+	} else if validation, ok := msg.(passwordValidationMsg); ok {
+		m.valid.password = bool(validation)
 	}
 	return m, nil
 }
 
 func (m Model) View() string {
 	italic := gloss.NewStyle().Italic(true)
+
+	validation := ""
+	if len(m.confirmation.Value()) > 0 {
+		if m.valid.password {
+			validation = fmt.Sprintf(" %s", okValidation.Render())
+		} else {
+			validation = fmt.Sprintf(" %s", errValidation.Render())
+		}
+	}
 
 	return fmt.Sprintf(
 		"%s\n"+
@@ -110,7 +137,8 @@ func (m Model) View() string {
 			"%s heading. Then click the %s button.\n"+
 			"The fields below will ask you for the password you gave your keys,\n"+
 			"and their location on your computer.\n\n"+
-			"Password: %s\n"+
+			"Password: %s%s\n"+
+			"Confirm Password: %s%s\n"+
 			"Path to Keys: %s %s\n\n"+
 			"Whole lotta cryptography gonna be happening here real soon 🔐!\n\n"+
 			"%s",
@@ -118,7 +146,8 @@ func (m Model) View() string {
 		italic.Render("Gear > Settings > Security & Privacy"),
 		italic.Render("Cryptography"),
 		italic.Render("Export E2E rooms keys"),
-		m.password.View(),
+		m.password.View(), validation,
+		m.confirmation.View(), validation,
 		m.file.View(),
 		m.status,
 		utils.Button(m.buttonFocused).Render("Next"),
