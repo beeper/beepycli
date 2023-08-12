@@ -17,7 +17,7 @@ type Model struct {
 func InitModel() Model {
 	return Model{
 		username:     utils.TextInput("beepy", false),
-		host:         utils.TextInput("127.0.0.1", false),
+		host:         utils.TextInput("beepy.local:22", false),
 		password:     utils.TextInput("beepbeep", true),
 		confirmation: utils.TextInput("beepbeep", true),
 	}
