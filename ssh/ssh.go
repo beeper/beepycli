@@ -23,6 +23,18 @@ func InitModel() Model {
 	}
 }
 
+func (m Model) Username() string {
+	return m.username.Value()
+}
+
+func (m Model) Password() string {
+	return m.password.Value()
+}
+
+func (m Model) Host() string {
+	return m.host.Value()
+}
+
 func (m Model) Init() tea.Cmd {
 	return nil
 }

@@ -93,6 +93,10 @@ func (m Model) UpdateConfig(mxID id.UserID, mxPassword, homeserver, keyPath, key
 	return m
 }
 
+func (m Model) OutputDir() string {
+	return m.config.OutputDir
+}
+
 func (m Model) Init() tea.Cmd {
 	return tea.Batch(
 		awaitLoadingMsg(m.updates),
@@ -129,9 +133,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	if m.status == loading {
+	switch m.status {
+	case loading:
 		return fmt.Sprintf("%s%s %s", m.spinner.View(), m.msg, m.spinner.View())
-	} else if m.status == failure {
+	case failure:
 		return fmt.Sprintf(
 			"%s\n"+
 				"The wizard has divined the following: %s\n"+
@@ -139,7 +144,7 @@ func (m Model) View() string {
 			utils.Title().Render("Gomuks initialization failed"),
 			utils.Error(m.err.Error()),
 		)
-	} else if m.status == success {
+	case success:
 		return fmt.Sprintf(
 			"%s\n"+
 				"Well done, apprentice.\n"+

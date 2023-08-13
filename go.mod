@@ -6,7 +6,9 @@ require (
 	github.com/charmbracelet/bubbles v0.16.1
 	github.com/charmbracelet/bubbletea v0.24.2
 	github.com/charmbracelet/lipgloss v0.7.1
-	maunium.net/go/gomuks v0.3.1-0.20230810065031-fb10f5980156
+	github.com/pkg/sftp v1.13.5
+	golang.org/x/crypto v0.0.0-20220513210258-46612604a0f9
+	maunium.net/go/gomuks v0.3.1-0.20230813090115-3b333aef02d8
 	maunium.net/go/mautrix v0.11.1
 )
 
@@ -21,6 +23,7 @@ require (
 	github.com/gdamore/encoding v1.0.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/kr/fs v0.1.0 // indirect
 	github.com/kyokomi/emoji/v2 v2.2.10 // indirect
 	github.com/lithammer/fuzzysearch v1.1.5 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
@@ -46,7 +49,6 @@ require (
 	go.mau.fi/cbind v0.0.0-20220415094356-e1d579b7925e // indirect
 	go.mau.fi/mauview v0.2.1 // indirect
 	go.mau.fi/tcell v0.4.0 // indirect
-	golang.org/x/crypto v0.0.0-20220513210258-46612604a0f9 // indirect
 	golang.org/x/image v0.1.0 // indirect
 	golang.org/x/net v0.2.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
