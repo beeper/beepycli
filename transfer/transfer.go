@@ -69,22 +69,25 @@ func (m Model) UpdateConfig(username, password, host, root string) Model {
 
 func (m Model) Init() tea.Cmd {
 	return tea.Batch(
-		genConfig(m.username, m.password),
 		genDirCollection(m.username),
-		genPatternCollection(m.root),
 		m.spinner.Tick,
 	)
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if conf, ok := msg.(configGenerated); ok {
+	if dirs, ok := msg.(dirCollectionGenerated); ok {
+		m.dirs = dirs
+		return m, genPatternCollection(m.root)
+	} else if patterns, ok := msg.(patternCollectionGenerated); ok {
+		m.patterns = patterns
+		return m, updateGomuksConfigForNewLocation(m.username, m.root, m.dirs)
+	} else if _, ok := msg.(gomuksConfigUpdatedMsg); ok {
+		m.msg = "Updated gomuks config for new location on Beepy…"
+		return m, genConfig(m.username, m.password)
+	} else if conf, ok := msg.(configGenerated); ok {
 		m.conf = conf
 		m.msg = "Generated SSH configuration…"
 		return m, genConn(m.host, m.conf)
-	} else if dirs, ok := msg.(dirCollectionGenerated); ok {
-		m.dirs = dirs
-	} else if patterns, ok := msg.(patternCollectionGenerated); ok {
-		m.patterns = patterns
 	} else if conn, ok := msg.(connGenerated); ok {
 		m.conn = conn
 		m.msg = "Opened connection with Beepy…"

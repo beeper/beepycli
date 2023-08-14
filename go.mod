@@ -8,6 +8,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.7.1
 	github.com/pkg/sftp v1.13.5
 	golang.org/x/crypto v0.0.0-20220513210258-46612604a0f9
+	gopkg.in/yaml.v3 v3.0.1
 	maunium.net/go/gomuks v0.3.1-0.20230813090115-3b333aef02d8
 	maunium.net/go/mautrix v0.11.1
 )
@@ -58,7 +59,6 @@ require (
 	gopkg.in/toast.v1 v1.0.0-20180812000517-0a84660828b2 // indirect
 	gopkg.in/vansante/go-ffprobe.v2 v2.1.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	maunium.net/go/maulogger/v2 v2.3.2 // indirect
 	mvdan.cc/xurls/v2 v2.4.0 // indirect
 	periph.io/x/conn/v3 v3.7.0 // indirect
