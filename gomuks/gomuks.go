@@ -80,7 +80,7 @@ func initializeGomuksInstance(conf headless.Config, updates chan fmt.Stringer) t
 	}
 }
 
-func (m Model) UpdateConfig(mxID id.UserID, mxPassword, homeserver, keyPath, keyPassword, recoveryPhrase string) Model {
+func (m Model) UpdateConfig(mxID id.UserID, mxPassword, homeserver, keyPath, keyPassword, recoveryCode string) Model {
 	m.updates = make(chan fmt.Stringer)
 	m.config.OutputDir = filepath.Join(os.TempDir(), "beepy", fmt.Sprintf("%d", time.Now().Unix()))
 	m.config.MxID = mxID
@@ -88,7 +88,7 @@ func (m Model) UpdateConfig(mxID id.UserID, mxPassword, homeserver, keyPath, key
 	m.config.MxPassword = mxPassword
 	m.config.KeyPath = keyPath
 	m.config.KeyPassword = keyPassword
-	m.config.RecoveryPhrase = recoveryPhrase
+	m.config.RecoveryCode = recoveryCode
 
 	return m
 }

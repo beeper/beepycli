@@ -18,7 +18,7 @@ func InitModel() Model {
 	return Model{recovery: utils.TextInput("tDAK LMRH PiYE bdzi maCe xLX5 wV6P Nmfd c5mC wLef 15Fs VVSc", true)}
 }
 
-func (m Model) RecoveryPhrase() string {
+func (m Model) RecoveryCode() string {
 	return m.recovery.Value()
 }
 
@@ -65,9 +65,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	return fmt.Sprintf(
 		"%s\n"+
-			"Please input your account recovery passphrase. This is the 48 character\n"+
-			"recovery code you received when you first set up Beeper.\n\n"+
-			"Recovery Phrase: %s\n\n"+
+			"Please input your account recovery code. This is the 48 character\n"+
+			"code you received when you first set up Beeper.\n\n"+
+			"Recovery Code: %s\n\n"+
 			"Something cool about the Beepy: this step doesn't cost $8/month 🤑!\n\n"+
 			"%s",
 		utils.Title().Render("Verify your Beepy client"),

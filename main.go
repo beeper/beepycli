@@ -59,7 +59,7 @@ func (m model) getGomuksConfig() (id.UserID, string, string, string, string, str
 		m.matrix.Homeserver(),
 		m.key.KeyPath(),
 		m.key.KeyPassword(),
-		m.verification.RecoveryPhrase()
+		m.verification.RecoveryCode()
 }
 
 func (m model) getTransferConfig() (string, string, string, string) {
