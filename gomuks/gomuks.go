@@ -9,7 +9,6 @@ import (
 	"github.com/figbert/beepy/utils"
 
 	"maunium.net/go/gomuks/headless"
-	"maunium.net/go/mautrix/id"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbletea"
@@ -80,12 +79,11 @@ func initializeGomuksInstance(conf headless.Config, updates chan fmt.Stringer) t
 	}
 }
 
-func (m Model) UpdateConfig(mxID id.UserID, mxPassword, homeserver, keyPath, keyPassword, recoveryCode string) Model {
+func (m Model) UpdateConfig(session, code, keyPath, keyPassword, recoveryCode string) Model {
 	m.updates = make(chan fmt.Stringer)
 	m.config.OutputDir = filepath.Join(os.TempDir(), "beepy", fmt.Sprintf("%d", time.Now().Unix()))
-	m.config.MxID = mxID
-	m.config.Homeserver = homeserver
-	m.config.MxPassword = mxPassword
+	m.config.Session = session
+	m.config.Code = code
 	m.config.KeyPath = keyPath
 	m.config.KeyPassword = keyPassword
 	m.config.RecoveryCode = recoveryCode

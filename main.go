@@ -1,8 +1,6 @@
 package main
 
 import (
-	"maunium.net/go/mautrix/id"
-
 	"github.com/charmbracelet/bubbletea"
 
 	"github.com/figbert/beepy/utils"
@@ -53,10 +51,9 @@ func initModel() model {
 	}
 }
 
-func (m model) getGomuksConfig() (id.UserID, string, string, string, string, string) {
-	return m.matrix.MxID(),
-		m.matrix.MxPassword(),
-		m.matrix.Homeserver(),
+func (m model) getGomuksConfig() (string, string, string, string, string) {
+	return m.matrix.Session(),
+		m.matrix.Code(),
 		m.key.KeyPath(),
 		m.key.KeyPassword(),
 		m.verification.RecoveryCode()
