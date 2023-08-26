@@ -80,6 +80,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.gomuks = m.gomuks.UpdateConfig(m.getGomuksConfig())
 			m.phase++
 			return m, m.gomuks.Init()
+		} else if m.phase == matrixPhase {
+			m.phase++
+			return m, m.key.Init()
 		} else if m.phase < transferPhase {
 			m.phase++
 		}

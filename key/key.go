@@ -2,8 +2,6 @@ package key
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"github.com/figbert/beepy/utils"
 
@@ -24,18 +22,10 @@ type Model struct {
 }
 
 func InitModel() Model {
-	var placeholder string
-	h, err := os.UserHomeDir()
-	if err == nil {
-		placeholder = filepath.Join(h, "element-keys.txt")
-	} else {
-		placeholder = "/home/user/element-keys.txt"
-	}
-
 	return Model{
 		password:     utils.TextInput(utils.PasswordPlaceholder, true),
 		confirmation: utils.TextInput(utils.PasswordPlaceholder, true),
-		file:         utils.TextInput(placeholder, false),
+		file:         utils.TextInput("/home/user/element-keys.txt", false),
 	}
 }
 
@@ -48,7 +38,7 @@ func (m Model) KeyPassword() string {
 }
 
 func (m Model) Init() tea.Cmd {
-	return nil
+	return getTextFileInWd
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -114,6 +104,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.valid.file = false
 	} else if validation, ok := msg.(passwordValidationMsg); ok {
 		m.valid.password = bool(validation)
+	} else if file, ok := msg.(keyFileMsg); ok {
+		m.file.Placeholder = string(file)
+		m.file.SetValue(string(file))
+		m.file.CursorEnd()
+		return m, prevalidate
 	}
 	return m, nil
 }
