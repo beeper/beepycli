@@ -86,7 +86,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, sendEmail(m.session, m.email.Value())
 	} else if _, ok := msg.(emailSuccess); ok {
 		m.code.Placeholder = "Check your inbox…"
-		return m, nil
+	} else if err, ok := msg.(apiError); ok {
+		m.code.Placeholder = err.Error()
 	}
 	return m, nil
 }
