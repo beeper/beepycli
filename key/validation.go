@@ -3,7 +3,7 @@ package key
 import (
 	"os"
 
-	"github.com/figbert/beepy/utils"
+	"github.com/beeper/beepycli/utils"
 
 	"github.com/charmbracelet/bubbletea"
 	gloss "github.com/charmbracelet/lipgloss"

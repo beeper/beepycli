@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/figbert/beepy/utils"
+	"github.com/beeper/beepycli/utils"
 
 	"maunium.net/go/gomuks/headless"
 

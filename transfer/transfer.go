@@ -3,7 +3,7 @@ package transfer
 import (
 	"fmt"
 
-	"github.com/figbert/beepy/utils"
+	"github.com/beeper/beepycli/utils"
 
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"

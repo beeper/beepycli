@@ -1,4 +1,4 @@
-module github.com/figbert/beepy
+module github.com/beeper/beepycli
 
 go 1.20
 

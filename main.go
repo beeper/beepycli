@@ -3,15 +3,15 @@ package main
 import (
 	"github.com/charmbracelet/bubbletea"
 
-	"github.com/figbert/beepy/utils"
+	"github.com/beeper/beepycli/utils"
 
-	"github.com/figbert/beepy/gomuks"
-	"github.com/figbert/beepy/key"
-	"github.com/figbert/beepy/matrix"
-	"github.com/figbert/beepy/ssh"
-	"github.com/figbert/beepy/transfer"
-	"github.com/figbert/beepy/verification"
-	"github.com/figbert/beepy/welcome"
+	"github.com/beeper/beepycli/gomuks"
+	"github.com/beeper/beepycli/key"
+	"github.com/beeper/beepycli/matrix"
+	"github.com/beeper/beepycli/ssh"
+	"github.com/beeper/beepycli/transfer"
+	"github.com/beeper/beepycli/verification"
+	"github.com/beeper/beepycli/welcome"
 )
 
 type phase int

@@ -3,7 +3,7 @@ package key
 import (
 	"fmt"
 
-	"github.com/figbert/beepy/utils"
+	"github.com/beeper/beepycli/utils"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbletea"
