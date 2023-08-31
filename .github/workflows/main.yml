@@ -38,8 +38,7 @@ jobs:
             go
             olm
       - name: Build
-        run: go build
-        shell: alpine.sh {0}
+        run: CGO_ENABLED=1 go build
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3
         with:
