@@ -39,9 +39,11 @@ jobs:
             git
             build-base
       - name: Fetch libolm
-        run: git clone --single-branch --branch 3.2.14 https://gitlab.matrix.org/matrix-org/olm.git
+        run: git clone --single-branch --branch 3.2.14 https://gitlab.matrix.org/matrix-org/olm.git /olm
+        shell: alpine.sh --root {0}
       - name: Install libolm
-        run: cd ./olm && CFLAGS=-static-libgcc CPPFLAGS="-static-libgcc -static-libstdc++" make install
+        run: cd /olm && CFLAGS=-static-libgcc CPPFLAGS="-static-libgcc -static-libstdc++" make install
+        shell: alpine.sh --root {0}
       - name: Build CLI
         run: go build
       - name: Upload a Build Artifact
