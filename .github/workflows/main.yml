@@ -46,6 +46,7 @@ jobs:
         shell: alpine.sh --root {0}
       - name: Build CLI
         run: go build
+        shell: alpine.sh {0}
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3
         with:
