@@ -1,0 +1,47 @@
+name: Build the Beepy CLI
+on: [push, pull_request]
+jobs:
+  #macos:
+  #  runs-on: macos-latest
+  #  name: Build on macOS (Universal)
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    - name: Set up Go
+  #      uses: actions/setup-go@v4
+  #    - name: Install libolm
+  #      run: brew install libolm
+  #    - name: Build x86_64
+  #      run: GOOS=darwin GOARCH=amd64 go build -o beepycli_amd64 .
+  #    - name: Build ARM
+  #      run: GOOS=darwin GOARCH=arm64 go build -o beepycli_arm64 .
+  #    - name: But make it universal!
+  #      run: lipo -create -output beepycli beepycli_amd64 beepycli_arm64
+  #    - name: Make libolm universal
+  #    - name: Upload macOS Build Artifacts
+  #      uses: actions/upload-artifact@v3
+  #      with:
+  #        name: Beepy CLI (macOS)
+  #        path: beepycli
+  #        if-no-files-found: error
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64, armv7]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Alpine (${{ matrix.arch }})
+        uses: jirutka/setup-alpine@v1
+        with:
+          arch: ${{ matrix.arch }}
+          packages: >
+            go
+            olm
+      - name: Build
+        run: go build
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Beepy CLI (Linux ${{ matrix.arch }})
+          path: beepycli
+          if-no-files-found: error
