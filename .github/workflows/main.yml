@@ -1,28 +1,37 @@
 name: Build the Beepy CLI
 on: [push, pull_request]
 jobs:
-  #macos:
-  #  runs-on: macos-latest
-  #  name: Build on macOS (Universal)
-  #  steps:
-  #    - uses: actions/checkout@v3
-  #    - name: Set up Go
-  #      uses: actions/setup-go@v4
-  #    - name: Install libolm
-  #      run: brew install libolm
-  #    - name: Build x86_64
-  #      run: GOOS=darwin GOARCH=amd64 go build -o beepycli_amd64 .
-  #    - name: Build ARM
-  #      run: GOOS=darwin GOARCH=arm64 go build -o beepycli_arm64 .
-  #    - name: But make it universal!
-  #      run: lipo -create -output beepycli beepycli_amd64 beepycli_arm64
-  #    - name: Make libolm universal
-  #    - name: Upload macOS Build Artifacts
-  #      uses: actions/upload-artifact@v3
-  #      with:
-  #        name: Beepy CLI (macOS)
-  #        path: beepycli
-  #        if-no-files-found: error
+  macos:
+    runs-on: macos-latest
+    name: Build on macOS (Universal)
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+      - name: Install libolm x86_64
+        run: brew install libolm
+      - name: Build x86_64
+        run: GOOS=darwin GOARCH=amd64 go build -o beepycli_amd64 .
+      - name: Cleanup libolm x86_64
+        run: mkdir libolm && cp "$(brew --prefix libolm)/lib/libolm.dylib" libolm/libolm.x86.dylib && brew uninstall libolm
+      - name: Install libolm ARM
+        run: brew fetch --force --bottle-tag=arm64_monterey libolm && brew install $(brew --cache --bottle-tag=arm64_monterey libolm)
+      - name: Build ARM
+        run: GOOS=darwin GOARCH=arm64 go build -o beepycli_arm64 .
+      - name: Cleanup libolm ARM
+        run: cp "$(brew --prefix libolm)/lib/libolm.dylib" libolm/libolm.arm64.dylib
+      - name: Make Beepy CLI universal
+        run: lipo -create -output beepycli beepycli_amd64 beepycli_arm64
+      - name: Make libolm universal
+        run: lipo -create -output libolm.dylib libolm/libolm.x86.dylib libolm/libolm.arm64.dylib
+      - name: Prepare for Artifact Export
+        run: mkdir gh-actions-export && mv beepycli gh-actions-export/ && mv libolm.dylib gh-actions-export/
+      - name: Upload macOS Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: macOS Universal (Beepy CLI & libolm)
+          path: gh-actions-export/
+          if-no-files-found: error
   linux:
     runs-on: ubuntu-latest
     strategy:
