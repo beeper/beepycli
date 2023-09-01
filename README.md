@@ -6,8 +6,8 @@ soon).
 
 ## Download
 You can find the latest binaries precompiled in [GitHub Actions]. If
-you're on Linux, you're done! If you on macOS, make sure to run `brew
-install libolm` before running.
+you're on Linux, you're done! If you're on macOS, make sure to run `brew
+install libolm` before using the CLI.
 
 Alternatively, you can build it yourself by cloning the repo and running
 `go build .`. Building requires Go 1.20 or higher, and a `libolm`
