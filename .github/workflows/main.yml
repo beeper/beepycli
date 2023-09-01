@@ -16,7 +16,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Beepy CLI (macOS x86_64)
-          path: gh-actions-export/
+          path: beepycli
           if-no-files-found: error
   macos_arm:
     runs-on: macos-latest
