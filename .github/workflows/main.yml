@@ -1,7 +1,7 @@
 name: Build the Beepy CLI
 on: [push, pull_request]
 jobs:
-  macos:
+  macos_amd:
     runs-on: macos-latest
     name: Build on macOS (x86_64)
     steps:
@@ -19,6 +19,23 @@ jobs:
         with:
           name: macOS x86_64 (Beepy CLI & libolm)
           path: gh-actions-export/
+          if-no-files-found: error
+  macos_arm:
+    runs-on: macos-latest
+    name: Build on macOS (ARM)
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+      - name: Install libolm
+        run: brew fetch --force --bottle-tag=arm64_monterey libolm && brew install $(brew --cache --bottle-tag=arm64_monterey libolm)
+      - name: Build CLI
+        run: GOOS=darwin GOARCH=arm64 go build
+      - name: Upload macOS Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Beepy CLI (macOS ARM)
+          path: beepycli
           if-no-files-found: error
   linux:
     runs-on: ubuntu-latest
