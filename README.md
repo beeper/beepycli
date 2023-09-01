@@ -5,16 +5,14 @@ from your Beepy to your computer (actually that second bit is coming
 soon).
 
 ## Download
-You can find the latest binaries precompiled in [GitHub Actions]. If
-you're on Linux, you're done! If you're on macOS, make sure to run `brew
-install libolm` before using the CLI.
+You can find the latest binaries precompiled in [GitHub Actions].
+
+If you're on Linux, this is all you need! If you're on macOS, make sure
+to run `brew install libolm` before using the CLI.
 
 Alternatively, you can build it yourself by cloning the repo and running
-`go build .`. Building requires Go 1.20 or higher, and a `libolm`
+`go build`. Building requires Go 1.20 or higher, and a `libolm`
 installation.
-
-`beepycli` supports x86_64 and arm64 on Linux and macOS, and arm7 on Linux.
-Windows is not supported natively, please use WSL.
 
 ## Usage
 To log in to your Beeper account and install `gomuks`—the Beeper client
