@@ -30,7 +30,7 @@ jobs:
       - name: Build CLI
         run: CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build
       - name: Update RPATH
-        run: >
+        run: |
           install_name_tool -change /usr/local/opt/libolm/lib/libolm.3.dylib @rpath/libolm.3.dylib beepycli
           install_name_tool -add_rpath @executable_path beepycli
           install_name_tool -add_rpath /opt/homebrew/opt/libolm/lib beepycli
