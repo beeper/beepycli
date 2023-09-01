@@ -29,6 +29,12 @@ jobs:
         run: brew fetch --force --bottle-tag=arm64_monterey libolm && brew install $(brew --cache --bottle-tag=arm64_monterey libolm)
       - name: Build CLI
         run: CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build
+      - name: Update RPATH
+        run: >
+          install_name_tool -change /usr/local/opt/libolm/lib/libolm.3.dylib @rpath/libolm.3.dylib beepycli
+          install_name_tool -add_rpath @executable_path beepycli
+          install_name_tool -add_rpath /opt/homebrew/opt/libolm/lib beepycli
+          install_name_tool -add_rpath /usr/local/opt/libolm/lib beepycli
       - name: Upload macOS Build Artifacts
         uses: actions/upload-artifact@v3
         with:
