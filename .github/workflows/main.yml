@@ -1,7 +1,7 @@
 name: Build the Beepy CLI
 on: [push, pull_request]
 jobs:
-  macos_amd:
+  macos_x86:
     runs-on: macos-latest
     name: Build on macOS (x86_64)
     steps:
@@ -12,12 +12,10 @@ jobs:
         run: brew install libolm
       - name: Build CLI
         run: go build
-      - name: Prepare for Artifact Export
-        run: mkdir gh-actions-export && mv beepycli gh-actions-export/ && cp "$(brew --prefix libolm)/lib/libolm.dylib" gh-actions-export/
       - name: Upload macOS Build Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: macOS x86_64 (Beepy CLI & libolm)
+          name: Beepy CLI (macOS x86_64)
           path: gh-actions-export/
           if-no-files-found: error
   macos_arm:
