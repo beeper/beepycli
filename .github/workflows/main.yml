@@ -30,7 +30,7 @@ jobs:
       - name: Install libolm
         run: brew fetch --force --bottle-tag=arm64_monterey libolm && brew install $(brew --cache --bottle-tag=arm64_monterey libolm)
       - name: Build CLI
-        run: GOOS=darwin GOARCH=arm64 go build
+        run: CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build
       - name: Upload macOS Build Artifacts
         uses: actions/upload-artifact@v3
         with:
