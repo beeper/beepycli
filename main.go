@@ -14,6 +14,12 @@ import (
 	"github.com/beeper/beepycli/welcome"
 )
 
+type nowWeCanQuit struct{}
+
+func quitStageTransfer() tea.Msg {
+	return nowWeCanQuit{}
+}
+
 type phase int
 
 const (
@@ -24,6 +30,7 @@ const (
 	gomuksPhase
 	sshPhase
 	transferPhase
+	quitPhase
 )
 
 type model struct {
@@ -85,6 +92,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, m.key.Init()
 		} else if m.phase < transferPhase {
 			m.phase++
+		} else {
+			m.phase++
+			return m, quitStageTransfer
 		}
 		return m, nil
 	} else if _, ok := msg.(utils.PrevPhaseMsg); ok {
@@ -94,6 +104,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.phase--
 		}
 		return m, nil
+	} else if _, ok := msg.(nowWeCanQuit); ok {
+		return m, tea.Quit
 	} else {
 		switch m.phase {
 		case welcomePhase:
@@ -145,6 +157,8 @@ func (m model) View() string {
 		return m.ssh.View()
 	case transferPhase:
 		return m.transfer.View()
+	case quitPhase:
+		return "✨ Enjoy your Beepy! ✨\n   Go forth and do\n   everything else!\n"
 	default:
 		return "How did we end up here?"
 	}
