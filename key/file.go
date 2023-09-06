@@ -32,9 +32,13 @@ func getTextFileInWd() tea.Msg {
 
 		return nil
 	})
-	if err != nil || file == "" {
+	if err != nil {
 		return nil
 	}
 
-	return keyFileMsg(file)
+	if file != "" {
+		return keyFileMsg(file)
+	} else {
+		return keyFileMsg(cwd)
+	}
 }
