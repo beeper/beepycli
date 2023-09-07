@@ -5,18 +5,36 @@ from your Beepy to your computer (actually that second bit is coming
 soon).
 
 ## Download
-You can find the latest binaries precompiled in [GitHub Actions].
+You can find the latest binaries precompiled in [GitHub Actions]. After
+downloading, make sure to give `beepycli` permission to execute (you can
+do this from the terminal by running `chmod +x beepycli`).
 
-If you're on Linux, this is all you need! If you're on macOS, make sure
-to run `brew install libolm` before using the CLI.
+If you're on Linux, this is all you need!
 
+### macOS
+If you're running macOS, you've got one more step—you need a working
+`libolm` installation. If you're using [Homebrew], the most popular
+macOS package manager, this is as simple as running `brew install
+libolm`. If you use [MacPorts], you can run `sudo port install olm`
+instead.
+
+You may also need to jump through some extra hoops when you first run
+the CLI because it is not distributed through the App Store. On first
+run, macOS will present you with a dialogue with two options: **Move to
+Trash** or **Cancel**. Choose *Cancel*, and open **System Settings >
+Privacy & Security** and scroll down until you see the option to approve
+the binary. Then, run `beepycli` again and click **Open**.
+
+Simple as 🥧.
+
+## Build
 Alternatively, you can build it yourself by cloning the repo and running
 `go build`. Building requires Go 1.20 or higher, and a `libolm`
 installation.
 
 ## Usage
 To log in to your Beeper account and install `gomuks`—the Beeper client
-for Beepy—all you have to do is run `beepycli`.
+for Beepy—all you have to do is run `beepycli` from your terminal.
 
 To copy logs from your Beepy device to your laptop, run `beepycli
 --logs`. Once that works, that is.
@@ -24,3 +42,5 @@ To copy logs from your Beepy device to your laptop, run `beepycli
 ~~Made in collaboration with Shadow Wizard Money Gang.~~
 
 [GitHub Actions]: https://github.com/beeper/beepycli/actions
+[Homebrew]: https://brew.sh
+[MacPorts]: https://www.macports.org
