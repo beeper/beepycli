@@ -5,9 +5,10 @@ from your Beepy to your computer (actually that second bit is coming
 soon).
 
 ## Download
-You can find the latest binaries precompiled in [GitHub Actions]. After
-downloading, make sure to give `beepycli` permission to execute (you can
-do this from the terminal by running `chmod +x beepycli`).
+You can find the latest binaries precompiled in [GitHub Actions].
+
+After downloading, make sure to give `beepycli` permission to execute.
+You can do this from the terminal by running `chmod +x beepycli`.
 
 If you're on Linux, this is all you need!
 
@@ -21,15 +22,15 @@ instead.
 You may also need to jump through some extra hoops when you first run
 the CLI because it is not distributed through the App Store. On first
 run, macOS will present you with a dialogue with two options: **Move to
-Trash** or **Cancel**. Choose *Cancel*, and open **System Settings >
+Trash** or **Cancel**. Choose **Cancel**, and open **System Settings >
 Privacy & Security** and scroll down until you see the option to approve
-the binary. Then, run `beepycli` again and click **Open**.
+the binary. Then, run the CLI again and click **Open**.
 
 Simple as 🥧.
 
 ## Build
-Alternatively, you can build it yourself by cloning the repo and running
-`go build`. Building requires Go 1.20 or higher, and a `libolm`
+Alternatively, you can build the CLI yourself by cloning the repo and
+running `go build`. Building requires Go 1.20 or higher, and a `libolm`
 installation.
 
 ## Usage
