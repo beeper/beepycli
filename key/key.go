@@ -140,7 +140,7 @@ func (m Model) View() string {
 		utils.Title().Render("Configure end-to-end encryption for your Beepy"),
 		italic.Render("Gear > Settings > Security & Privacy"),
 		italic.Render("Cryptography"),
-		italic.Render("Export E2E rooms keys"),
+		italic.Render("Export E2E room keys"),
 		m.password.View(), validation,
 		m.confirmation.View(), validation,
 		m.file.View(),
