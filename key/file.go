@@ -25,7 +25,7 @@ func getTextFileInWd() tea.Msg {
 		if d.IsDir() {
 			return nil
 		}
-		if filepath.Ext(d.Name()) == ".txt" {
+		if d.Name() == "element-keys.txt" {
 			file = path
 			return fs.SkipAll
 		}
