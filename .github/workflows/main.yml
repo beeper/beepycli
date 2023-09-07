@@ -1,5 +1,13 @@
 name: Build the Beepy CLI
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - "README.md"
+  pull_request:
+    paths-ignore:
+      - "README.md"
+concurrency:
+  cancel-in-progress: true
 jobs:
   macos_x86:
     runs-on: macos-latest
