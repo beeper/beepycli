@@ -7,6 +7,7 @@ on:
     paths-ignore:
       - "README.md"
 concurrency:
+  group: ${{ github.ref }}
   cancel-in-progress: true
 jobs:
   macos_x86:
