@@ -1,12 +1,15 @@
 package main
 
 import (
+	"flag"
+
 	"github.com/charmbracelet/bubbletea"
 
 	"github.com/beeper/beepycli/utils"
 
 	"github.com/beeper/beepycli/gomuks"
 	"github.com/beeper/beepycli/key"
+	"github.com/beeper/beepycli/logs"
 	"github.com/beeper/beepycli/matrix"
 	"github.com/beeper/beepycli/ssh"
 	"github.com/beeper/beepycli/transfer"
@@ -165,6 +168,14 @@ func (m model) View() string {
 }
 
 func main() {
+	shouldRunLogExfil := flag.Bool("logs", false, "Copy logs from your Beepy device to your computer")
+	flag.Parse()
+
+	if *shouldRunLogExfil {
+		logs.Run()
+		return
+	}
+
 	m := initModel()
 	tea.NewProgram(m).Run()
 }
