@@ -79,7 +79,7 @@ func transferGomuks(binary string, client *sftp.Client) tea.Cmd {
 		}
 		defer local.Close()
 
-		remote, err := client.Create("gomuks")
+		remote, err := client.Create("/usr/local/bin/gomuks")
 		if err != nil {
 			return transferErr(err)
 		}
