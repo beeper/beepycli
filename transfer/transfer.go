@@ -102,11 +102,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	} else if _, ok := msg.(exfilSuccess); ok {
 		m.msg = "Copied gomuks instance to Beepy…"
 		return m, downloadLatestGomuksBinary
-	} else if archive, ok := msg.(gomuksFetched); ok {
-		m.msg = "Downloaded latest gomuks binary…"
-		return m, decompressGomuksDownload(string(archive))
-	} else if binary, ok := msg.(gomuksDecompressed); ok {
-		m.msg = "Unzipped gomuks binary, transfering to Beepy…"
+	} else if binary, ok := msg.(gomuksFetched); ok {
+		m.msg = "Downloaded latest gomuks binary, transfering to Beepy…"
 		return m, transferGomuks(string(binary), m.client)
 	} else if _, ok := msg.(gomuksTransfered); ok {
 		m.status = success

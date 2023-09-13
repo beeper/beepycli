@@ -1,7 +1,6 @@
 package transfer
 
 import (
-	"archive/zip"
 	"io"
 	"net/http"
 	"os"
@@ -12,14 +11,13 @@ import (
 	"github.com/charmbracelet/bubbletea"
 )
 
-const url = "https://mau.dev/tulir/gomuks/-/jobs/artifacts/beepberry/download?job=linux/arm"
+const url = "https://github.com/beeper/gomuks/releases/download/nightly/gomuks-linux-armv7"
 
 type gomuksFetched string
-type gomuksDecompressed string
 type gomuksTransfered struct{}
 
 func downloadLatestGomuksBinary() tea.Msg {
-	destination := filepath.Join(os.TempDir(), "gomuks.zip")
+	destination := filepath.Join(os.TempDir(), "gomuks")
 
 	out, err := os.Create(destination)
 	if err != nil {
@@ -39,36 +37,6 @@ func downloadLatestGomuksBinary() tea.Msg {
 	}
 
 	return gomuksFetched(destination)
-}
-
-func decompressGomuksDownload(archive string) tea.Cmd {
-	return func() tea.Msg {
-		r, err := zip.OpenReader(archive)
-		if err != nil {
-			return transferErr(err)
-		}
-		defer r.Close()
-
-		file, err := r.Open("gomuks")
-		if err != nil {
-			return transferErr(err)
-		}
-		defer file.Close()
-
-		destination := filepath.Join(os.TempDir(), "gomuks")
-		out, err := os.Create(destination)
-		if err != nil {
-			return transferErr(err)
-		}
-		defer out.Close()
-
-		_, err = io.Copy(out, file)
-		if err != nil {
-			return transferErr(err)
-		}
-
-		return gomuksDecompressed(destination)
-	}
 }
 
 func transferGomuks(binary string, client *sftp.Client) tea.Cmd {
