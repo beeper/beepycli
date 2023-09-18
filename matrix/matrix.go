@@ -72,7 +72,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			var cmd tea.Cmd
 			if m.code.Focused() {
 				switch key.String() {
-				case "1", "2", "3", "4", "5", "6", "7", "8", "9", "0":
+				case "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace":
 					m.code, cmd = m.code.Update(msg)
 				}
 			} else if m.email.Focused() {

@@ -9,7 +9,7 @@ require (
 	github.com/pkg/sftp v1.13.5
 	golang.org/x/crypto v0.0.0-20220513210258-46612604a0f9
 	gopkg.in/yaml.v3 v3.0.1
-	maunium.net/go/gomuks v0.3.1-0.20230830062059-d8b1fb40dc21
+	maunium.net/go/gomuks v0.3.1-0.20230915213629-190eb0cdbadb
 )
 
 require (
